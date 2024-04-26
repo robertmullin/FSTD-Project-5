@@ -122,14 +122,6 @@ header h1 {
    Modal
 ======================================== */
 
-.open {
-    display: block;
-}
-
-.close {
-    display: none;
-}
-
 .modal-container {
     position: fixed;
     top: 0;
@@ -137,6 +129,7 @@ header h1 {
     bottom: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.7);
+    display: none;
 }
 
 .modal {
@@ -150,6 +143,7 @@ header h1 {
     border-radius: 0.25em;
     border: 1px solid rgba(100, 100, 100, 0.3);
     transition: .4s ease-out;
+    display: block;
 }
 
 .modal-close-btn {

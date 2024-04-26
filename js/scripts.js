@@ -11,15 +11,12 @@ xhr.onreadystatechange = function () {
   if (xhr.readyState === 4 && xhr.status === 200) {
     // grab the JSON response from xhr object and parse it into a JS Object and access the object property that store everything in the object
     const data = JSON.parse(xhr.responseText).results;
-    // console log to double check the data is in the correct format
-    console.log(data);
     // run a loop over each user to grab the info from the JSON file
     data.forEach((user) => {
-
       userData.push(user);
       // insert it into the HTML structure with template literals
       userCardHTML = `
-          <div class="card" id="card-wrapper">
+          <div class="card">
             <div class="card-img-container">
                 <img class="card-img" src="${user.picture.thumbnail}" alt="profile picture">
             </div>
@@ -38,13 +35,47 @@ xhr.onreadystatechange = function () {
     // END DISPLAY
 
     // MODAL FUNCTIONALITY
-    // attach a click event to the card
-    const cardWrapper = document.getElementById("card-wrapper").addEventListener("click", displayModal);
+    // create modal div and all contents that won't be dynamic in a variable
+    let modalContainer = document.createElement("div");
+    modalContainer.classList.add("modal-container");
+    modalContainer.innerHTML = `
+      <div class="modal">
+      <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+      <div class="modal-info-container"></div>
+    `;
+    // insert it into the DOM
+    galleryContainer.insertAdjacentElement("afterend", modalContainer);
+    // select the card wrappers and store it in a variable
+    let cardWrappers = document.querySelectorAll(".card");
 
-    function displayModal() {
-      modalContainer.classList.add("open");
+    cardWrappers.forEach(function(cardWrapper, index) {
+      cardWrapper.addEventListener("click", function() {
+        displayModal(userData[index]);
+      });
+    });
+
+    function displayModal(user) {
+
+      let modalContainerContent = modalContainer.querySelector(".modal-info-container");
+      modalContainerContent.innerHTML = `
+        <img class="modal-img" src="${user.picture.large}" alt="profile picture">
+        <h3 id="name" class="modal-name cap">${user.name.title} ${user.name.first} ${user.name.last}</h3>
+        <p class="modal-text">${user.email}</p>
+        <p class="modal-text cap">${user.location.city}</p>
+        <hr>
+        <p class="modal-text">${user.cell}</p>
+        <p class="modal-text">${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state} ${user.location.postcode}</p>
+        <p class="modal-text">Birthday: ${user.dob.date}</p>     
+      `;
+
+      modalContainer.style.display = "block";
     }
 
+    let btnClose = document.getElementById("modal-close-btn");
+    btnClose.onclick = function () {
+      modalContainer.style.display = "none";
+    };
+  // END MODAL FUNCTIONALITY
     // handle other errors
   } else if (xhr.status === 404) {
     console.log("ERROR file not found");
@@ -59,90 +90,3 @@ xhr.open(
   true
 );
 xhr.send();
-
-// MODAL
-
-function displayModal(user) {
-  let modalContainer = `
-  <div class="modal-container">
-  <div class="modal">
-      <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-      <div class="modal-info-container">
-          <img class="modal-img" src="${userData.picture.large}" alt="profile picture">
-          <h3 id="name" class="modal-name cap">${userData.name.title} ${userData.name.first} ${userData.name.last}</h3>
-          <p class="modal-text">${userData.email}</p>
-          <p class="modal-text cap">${userData.location.city}</p>
-          <hr>
-          <p class="modal-text">${userData.cell}</p>
-          <p class="modal-text">${userData.location.street.number} ${userData.location.street.name}, ${userData.location.city}, ${userData.location.state} ${userData.location.postcode}</p>
-          <p class="modal-text">Birthday: ${userData.dob}</p>
-      </div>
-  </div>
-  `;
-
-  galleryContainer.insertAdjacentHTML("afterend", modalContainer);
-}
-
-
-
-
-
-/*
-let modalContainer = `
-  <div class="modal-container">
-  <div class="modal">
-      <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-      <div class="modal-info-container">
-          <img class="modal-img" src="${userData.picture.large}" alt="profile picture">
-          <h3 id="name" class="modal-name cap">${userData.name.title} ${userData.name.first} ${userData.name.last}</h3>
-          <p class="modal-text">${userData.email}</p>
-          <p class="modal-text cap">${userData.location.city}</p>
-          <hr>
-          <p class="modal-text">${userData.cell}</p>
-          <p class="modal-text">${userData.location.street.number} ${userData.location.street.name}, ${userData.location.city}, ${userData.location.state} ${userData.location.postcode}</p>
-          <p class="modal-text">Birthday: ${userData.dob}</p>
-      </div>
-  </div>
-`;
-
-
-let modalContainer = `
-    <div class="modal-container">
-    <div class="modal">
-        <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-        <div class="modal-info-container">
-            <img class="modal-img" src="${userData.picture.large}" alt="profile picture">
-            <h3 id="name" class="modal-name cap">${userData.name.title} ${userData.name.first} ${userData.name.last}</h3>
-            <p class="modal-text">${userData.email}</p>
-            <p class="modal-text cap">${userData.location.city}</p>
-            <hr>
-            <p class="modal-text">${userData.cell}</p>
-            <p class="modal-text">${userData.location.street.number} ${userData.location.street.name}, ${userData.location.city}, ${userData.location.state} ${userData.location.postcode}</p>
-            <p class="modal-text">Birthday: ${userData.dob}</p>
-        </div>
-    </div>
-  `;
-
-
-let modalContainer = '<div style="height: 100px; width: 100px; background-color: blue;"></div>';
-
-/*
-
-$.ajax({
-    url: 'https://randomuser.me/api/?results=12&inc=picture,name,email,location',
-    dataType: 'json',
-    success: function(data) {
-      console.log(data);
-    }
-  });
-*/
-
-/*
-let user; 
-const imgContainer = `<div class="card-img-container">`;
-const userImg = `<img class="card-img" src="${user.picture.thumbnail}" alt="profile picture">`;
-const infoContainer = `<div class="card-info-container">`;
-const infoContainerName = `<h3 id="name" class="card-name cap">first last</h3>`;
-const infoContainerEmail = `<p class="card-text">email</p>`;
-const infoContainerCity = `<p class="card-text cap">city, state</p>`;
-*/
