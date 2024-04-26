@@ -122,6 +122,14 @@ header h1 {
    Modal
 ======================================== */
 
+.open {
+    display: block;
+}
+
+.close {
+    display: none;
+}
+
 .modal-container {
     position: fixed;
     top: 0;
