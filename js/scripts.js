@@ -13,6 +13,7 @@ xhr.onreadystatechange = function () {
     const data = JSON.parse(xhr.responseText).results;
     // run a loop over each user to grab the info from the JSON file
     data.forEach((user) => {
+      // store the information in an empty array
       userData.push(user);
       // insert it into the HTML structure with template literals
       userCardHTML = `
@@ -57,6 +58,14 @@ xhr.onreadystatechange = function () {
     function displayModal(user) {
 
       let modalContainerContent = modalContainer.querySelector(".modal-info-container");
+
+      const birthdayDate = new Date(user.dob.date);
+      const formattedDOB = {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      };
+
       modalContainerContent.innerHTML = `
         <img class="modal-img" src="${user.picture.large}" alt="profile picture">
         <h3 id="name" class="modal-name cap">${user.name.title} ${user.name.first} ${user.name.last}</h3>
@@ -65,7 +74,7 @@ xhr.onreadystatechange = function () {
         <hr>
         <p class="modal-text">${user.cell}</p>
         <p class="modal-text">${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state} ${user.location.postcode}</p>
-        <p class="modal-text">Birthday: ${user.dob.date}</p>     
+        <p class="modal-text">Birthday: ${birthdayDate.toLocaleDateString("en-US", formattedDOB)}</p>     
       `;
 
       modalContainer.style.display = "block";
