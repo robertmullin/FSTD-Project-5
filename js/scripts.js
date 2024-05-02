@@ -48,24 +48,24 @@ xhr.onreadystatechange = function () {
     galleryContainer.insertAdjacentElement("afterend", modalContainer);
     // select the card wrappers and store it in a variable
     let cardWrappers = document.querySelectorAll(".card");
-
+    // lop over the user cards and listen for the click event on each one
     cardWrappers.forEach(function(cardWrapper, index) {
       cardWrapper.addEventListener("click", function() {
         displayModal(userData[index]);
       });
     });
-
+    // add function to display the modal
     function displayModal(user) {
-
+      // store the variable for the modal container
       let modalContainerContent = modalContainer.querySelector(".modal-info-container");
-
+      // clean up the date of birth information 
       const birthdayDate = new Date(user.dob.date);
       const formattedDOB = {
         year: "numeric",
         month: "long",
         day: "numeric"
       };
-
+      // give the modal container the information according to the parameters
       modalContainerContent.innerHTML = `
         <img class="modal-img" src="${user.picture.large}" alt="profile picture">
         <h3 id="name" class="modal-name cap">${user.name.title} ${user.name.first} ${user.name.last}</h3>
@@ -76,10 +76,10 @@ xhr.onreadystatechange = function () {
         <p class="modal-text">${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state} ${user.location.postcode}</p>
         <p class="modal-text">Birthday: ${birthdayDate.toLocaleDateString("en-US", formattedDOB)}</p>     
       `;
-
+      // display the modal 
       modalContainer.style.display = "block";
     }
-
+    // click even to close the modal
     let btnClose = document.getElementById("modal-close-btn");
     btnClose.onclick = function () {
       modalContainer.style.display = "none";
